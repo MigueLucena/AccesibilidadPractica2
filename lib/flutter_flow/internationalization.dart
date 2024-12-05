@@ -315,7 +315,7 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'fr': 'Courez-moi',
     },
     'l6jz378m': {
-      'es': 'Activar lector de pantalla',
+      'es': 'LECTOR DE PANTALLA',
       'ar': 'تفعيل قارئ الشاشة',
       'de': 'Aktivieren Sie den Bildschirmleser',
       'en': 'Activate screen reader',

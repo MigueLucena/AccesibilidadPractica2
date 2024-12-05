@@ -12,6 +12,7 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:text_search/text_search.dart';
 import 'home_model.dart';
@@ -529,7 +530,7 @@ class _HomeWidgetState extends State<HomeWidget> with TickerProviderStateMixin {
                               safeSetState(
                                   () => _model.mouseRegionHovered1 = true);
                               await actions.textToSpeech(
-                                'Estas sobre el botón para activar el lector de pantalla. Púlselo para',
+                                'Estas sobre el botón para activar el lector de pantalla. Púlselo para poder usarlo',
                                 'es-ES',
                               );
                             }),
@@ -588,7 +589,11 @@ class _HomeWidgetState extends State<HomeWidget> with TickerProviderStateMixin {
                                 }
                               },
                               text: FFLocalizations.of(context).getText(
-                                'l6jz378m' /* Activar lector de pantalla */,
+                                'l6jz378m' /* LECTOR DE PANTALLA */,
+                              ),
+                              icon: const FaIcon(
+                                FontAwesomeIcons.volumeUp,
+                                size: 15.0,
                               ),
                               options: FFButtonOptions(
                                 width: double.infinity,
@@ -672,7 +677,7 @@ class _HomeWidgetState extends State<HomeWidget> with TickerProviderStateMixin {
                                                   .mouseRegionHovered3 = true);
                                               if (FFAppState().lectorPantalla) {
                                                 await actions.textToSpeech(
-                                                  'Estas sobre buscador de polideportivo. Pulse para escribir el nombre de un poldeportivo.',
+                                                  'Estas sobre el buscador de polideportivos. Pulse para escribir el nombre de un polideportivo.',
                                                   'es-ES',
                                                 );
                                               }
@@ -1029,172 +1034,160 @@ class _HomeWidgetState extends State<HomeWidget> with TickerProviderStateMixin {
                                             ),
                                           ),
                                         ),
-                                        InkWell(
-                                          splashColor: Colors.transparent,
-                                          focusColor: Colors.transparent,
-                                          hoverColor: Colors.transparent,
-                                          highlightColor: Colors.transparent,
-                                          onTap: () async {
-                                            FFAppState().isRecording = true;
-                                            safeSetState(() {});
-                                          },
-                                          child: Builder(
-                                            builder: (context) {
-                                              if (FFAppState().isRecording) {
-                                                return Padding(
-                                                  padding: const EdgeInsetsDirectional
-                                                      .fromSTEB(
-                                                          0.0, 20.0, 0.0, 0.0),
-                                                  child: FlutterFlowIconButton(
-                                                    borderRadius: 8.0,
-                                                    buttonSize: 63.0,
-                                                    fillColor:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .primary,
-                                                    icon: Icon(
-                                                      Icons.stop_circle,
-                                                      color:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .info,
-                                                      size: 35.0,
-                                                    ),
-                                                    onPressed: () async {
-                                                      FFAppState().isRecording =
-                                                          false;
-                                                      safeSetState(() {});
-                                                      await actions
-                                                          .stopTextRecording();
-                                                      safeSetState(() {
+                                        Builder(
+                                          builder: (context) {
+                                            if (FFAppState().isRecording) {
+                                              return Padding(
+                                                padding: const EdgeInsetsDirectional
+                                                    .fromSTEB(
+                                                        0.0, 20.0, 0.0, 0.0),
+                                                child: FlutterFlowIconButton(
+                                                  borderRadius: 8.0,
+                                                  buttonSize: 63.0,
+                                                  fillColor:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .primary,
+                                                  icon: Icon(
+                                                    Icons.stop_circle,
+                                                    color: FlutterFlowTheme.of(
+                                                            context)
+                                                        .info,
+                                                    size: 35.0,
+                                                  ),
+                                                  onPressed: () async {
+                                                    FFAppState().isRecording =
+                                                        false;
+                                                    safeSetState(() {});
+                                                    await actions
+                                                        .stopTextRecording();
+                                                    safeSetState(() {
+                                                      _model.buscadorTextController
+                                                              ?.text =
+                                                          FFAppState()
+                                                              .speechToTextResponse;
+                                                      _model.buscadorFocusNode
+                                                          ?.requestFocus();
+                                                      WidgetsBinding.instance
+                                                          .addPostFrameCallback(
+                                                              (_) {
                                                         _model.buscadorTextController
-                                                                ?.text =
-                                                            FFAppState()
-                                                                .speechToTextResponse;
-                                                        _model.buscadorFocusNode
-                                                            ?.requestFocus();
-                                                        WidgetsBinding.instance
-                                                            .addPostFrameCallback(
-                                                                (_) {
-                                                          _model.buscadorTextController
-                                                                  ?.selection =
-                                                              TextSelection
-                                                                  .collapsed(
-                                                            offset: _model
-                                                                .buscadorTextController!
-                                                                .text
-                                                                .length,
-                                                          );
-                                                        });
+                                                                ?.selection =
+                                                            TextSelection
+                                                                .collapsed(
+                                                          offset: _model
+                                                              .buscadorTextController!
+                                                              .text
+                                                              .length,
+                                                        );
                                                       });
-                                                      await queryCollectionRecordOnce()
-                                                          .then(
-                                                            (records) => _model
-                                                                    .simpleSearchResults2 =
-                                                                TextSearch(
-                                                              records
-                                                                  .map(
-                                                                    (record) =>
-                                                                        TextSearchItem.fromTerms(
-                                                                            record,
-                                                                            [
-                                                                          record
-                                                                              .name
-                                                                        ]),
-                                                                  )
-                                                                  .toList(),
-                                                            )
-                                                                    .search(_model
-                                                                        .buscadorTextController
-                                                                        .text)
-                                                                    .map((r) =>
-                                                                        r.object)
-                                                                    .toList(),
+                                                    });
+                                                    await queryCollectionRecordOnce()
+                                                        .then(
+                                                          (records) => _model
+                                                                  .simpleSearchResults2 =
+                                                              TextSearch(
+                                                            records
+                                                                .map(
+                                                                  (record) => TextSearchItem
+                                                                      .fromTerms(
+                                                                          record,
+                                                                          [
+                                                                        record
+                                                                            .name
+                                                                      ]),
+                                                                )
+                                                                .toList(),
                                                           )
-                                                          .onError((_, __) =>
-                                                              _model.simpleSearchResults2 =
-                                                                  [])
-                                                          .whenComplete(() =>
-                                                              safeSetState(
-                                                                  () {}));
+                                                                  .search(_model
+                                                                      .buscadorTextController
+                                                                      .text)
+                                                                  .map((r) =>
+                                                                      r.object)
+                                                                  .toList(),
+                                                        )
+                                                        .onError((_, __) =>
+                                                            _model.simpleSearchResults2 =
+                                                                [])
+                                                        .whenComplete(() =>
+                                                            safeSetState(
+                                                                () {}));
 
-                                                      FFAppState().buscando =
-                                                          true;
-                                                      safeSetState(() {});
-                                                      if (FFAppState()
-                                                          .lectorPantalla) {
-                                                        await actions
-                                                            .textToSpeech(
-                                                          'Has escrito',
-                                                          'es-ES',
-                                                        );
-                                                        await actions
-                                                            .textToSpeech(
-                                                          _model
-                                                              .buscadorTextController
-                                                              .text,
-                                                          'es-ES',
-                                                        );
-                                                      }
-                                                    },
-                                                  ),
-                                                );
-                                              } else {
-                                                return Padding(
-                                                  padding: const EdgeInsetsDirectional
-                                                      .fromSTEB(
-                                                          0.0, 20.0, 0.0, 0.0),
-                                                  child: FlutterFlowIconButton(
-                                                    borderRadius: 8.0,
-                                                    buttonSize: 63.0,
-                                                    fillColor:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .primary,
-                                                    icon: Icon(
-                                                      Icons.mic,
-                                                      color:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .info,
-                                                      size: 35.0,
-                                                    ),
-                                                    onPressed: () async {
-                                                      FFAppState().isRecording =
-                                                          true;
-                                                      safeSetState(() {});
-                                                      FFAppState()
-                                                          .speechToTextResponse = '';
-                                                      safeSetState(() {});
-                                                      safeSetState(() {
-                                                        _model.buscadorTextController
-                                                                ?.text =
-                                                            FFAppState()
-                                                                .speechToTextResponse;
-                                                        _model.buscadorFocusNode
-                                                            ?.requestFocus();
-                                                        WidgetsBinding.instance
-                                                            .addPostFrameCallback(
-                                                                (_) {
-                                                          _model.buscadorTextController
-                                                                  ?.selection =
-                                                              TextSelection
-                                                                  .collapsed(
-                                                            offset: _model
-                                                                .buscadorTextController!
-                                                                .text
-                                                                .length,
-                                                          );
-                                                        });
-                                                      });
+                                                    FFAppState().buscando =
+                                                        true;
+                                                    safeSetState(() {});
+                                                    if (FFAppState()
+                                                        .lectorPantalla) {
                                                       await actions
-                                                          .startTextRecording();
-                                                    },
+                                                          .textToSpeech(
+                                                        'Has escrito',
+                                                        'es-ES',
+                                                      );
+                                                      await actions
+                                                          .textToSpeech(
+                                                        _model
+                                                            .buscadorTextController
+                                                            .text,
+                                                        'es-ES',
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              );
+                                            } else {
+                                              return Padding(
+                                                padding: const EdgeInsetsDirectional
+                                                    .fromSTEB(
+                                                        0.0, 20.0, 0.0, 0.0),
+                                                child: FlutterFlowIconButton(
+                                                  borderRadius: 8.0,
+                                                  buttonSize: 63.0,
+                                                  fillColor:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .primary,
+                                                  icon: Icon(
+                                                    Icons.mic,
+                                                    color: FlutterFlowTheme.of(
+                                                            context)
+                                                        .info,
+                                                    size: 35.0,
                                                   ),
-                                                );
-                                              }
-                                            },
-                                          ),
+                                                  onPressed: () async {
+                                                    FFAppState().isRecording =
+                                                        true;
+                                                    safeSetState(() {});
+                                                    FFAppState()
+                                                        .speechToTextResponse = '';
+                                                    safeSetState(() {});
+                                                    safeSetState(() {
+                                                      _model.buscadorTextController
+                                                              ?.text =
+                                                          FFAppState()
+                                                              .speechToTextResponse;
+                                                      _model.buscadorFocusNode
+                                                          ?.requestFocus();
+                                                      WidgetsBinding.instance
+                                                          .addPostFrameCallback(
+                                                              (_) {
+                                                        _model.buscadorTextController
+                                                                ?.selection =
+                                                            TextSelection
+                                                                .collapsed(
+                                                          offset: _model
+                                                              .buscadorTextController!
+                                                              .text
+                                                              .length,
+                                                        );
+                                                      });
+                                                    });
+                                                    await actions
+                                                        .startTextRecording();
+                                                  },
+                                                ),
+                                              );
+                                            }
+                                          },
                                         ),
                                       ],
                                     ),
